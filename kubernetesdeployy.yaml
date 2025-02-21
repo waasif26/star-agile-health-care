@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insr-eta-deploy
+  labels:
+    app: insr-eta-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: insr-eta-app
+  template:
+    metadata:
+      labels:
+        app: insr-eta-app
+    spec:
+      containers:
+      - name: insr-eta-container
+        image: waasifahmed/insr-eta-app
+        ports:
+        - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insr-eta-np-service
+  labels:
+    app: insr-eta-app
+spec:
+  selector:
+    app: insr-eta-app
+  type: NodePort  # Keep the type as NodePort
+  ports:
+  - port: 8082      # The port exposed within the cluster
+    targetPort: 8082 # The port the container is listening on
+    # nodePort: 31030  # REMOVE THIS LINE - Let Kubernetes auto-assign
